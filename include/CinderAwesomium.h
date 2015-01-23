@@ -395,4 +395,101 @@ inline void handleMouseWheel( Awesomium::WebView *view, ci::app::MouseEvent even
 	view->InjectMouseWheel( increment * int( event.getWheelIncrement() ), 0 );
 }
 
+//! sends a Cinder TouchesBegan event to the WebView
+inline void handleTouchesBegan( Awesomium::WebView *view, ci::app::WindowRef window, ci::app::TouchEvent event )
+{
+	// TODO check differences between touches, changed_touches and target_touches
+	Awesomium::WebTouchEvent webTouchEvent;
+
+	webTouchEvent.type = Awesomium::kWebTouchEventType_Start;
+	webTouchEvent.touches_length = 0;
+	webTouchEvent.changed_touches_length = 0;
+	webTouchEvent.target_touches_length = 0;
+	for ( const auto &touch : event.getTouches() )
+	{
+		if ( webTouchEvent.touches_length >= 7 )
+			break;
+
+		webTouchEvent.touches[ webTouchEvent.touches_length ].id = touch.getId();
+		webTouchEvent.touches[ webTouchEvent.touches_length ].state = Awesomium::kWebTouchPointState_Pressed;
+		ci::ivec2 pos = ( ci::ivec2 )window->toPixels( touch.getPos() );
+		webTouchEvent.touches[ webTouchEvent.touches_length ].screen_position_x = window->getPos().x + pos.x;
+		webTouchEvent.touches[ webTouchEvent.touches_length ].screen_position_y = window->getPos().y + pos.y;
+		webTouchEvent.touches[ webTouchEvent.touches_length ].position_x = pos.x;
+		webTouchEvent.touches[ webTouchEvent.touches_length ].position_y = pos.y;
+		webTouchEvent.touches[ webTouchEvent.touches_length ].radius_x = 1;
+		webTouchEvent.touches[ webTouchEvent.touches_length ].radius_y = 1;
+		webTouchEvent.touches[ webTouchEvent.touches_length ].rotation_angle = 0;
+		webTouchEvent.touches[ webTouchEvent.touches_length ].force = 0;
+		webTouchEvent.touches_length++;
+	}
+
+	view->InjectTouchEvent( webTouchEvent );
+}
+
+//! sends a Cinder TouchesMoved event to the WebView
+inline void handleTouchesMoved( Awesomium::WebView *view, ci::app::WindowRef window, ci::app::TouchEvent event )
+{
+	// TODO check differences between touches, changed_touches and target_touches
+	Awesomium::WebTouchEvent webTouchEvent;
+
+	webTouchEvent.type = Awesomium::kWebTouchEventType_Move;
+	webTouchEvent.touches_length = 0;
+	webTouchEvent.changed_touches_length = 0;
+	webTouchEvent.target_touches_length = 0;
+	for ( const auto &touch : event.getTouches() )
+	{
+		if ( webTouchEvent.changed_touches_length >= 7 )
+			break;
+
+		webTouchEvent.changed_touches[ webTouchEvent.changed_touches_length ].id = touch.getId();
+		webTouchEvent.changed_touches[ webTouchEvent.changed_touches_length ].state = Awesomium::kWebTouchPointState_Moved;
+		ci::ivec2 pos = ( ci::ivec2 )window->toPixels( touch.getPos() );
+		webTouchEvent.changed_touches[ webTouchEvent.changed_touches_length ].screen_position_x = window->getPos().x + pos.x;
+		webTouchEvent.changed_touches[ webTouchEvent.changed_touches_length ].screen_position_y = window->getPos().y + pos.y;
+		webTouchEvent.changed_touches[ webTouchEvent.changed_touches_length ].position_x = pos.x;
+		webTouchEvent.changed_touches[ webTouchEvent.changed_touches_length ].position_y = pos.y;
+		webTouchEvent.changed_touches[ webTouchEvent.changed_touches_length ].radius_x = 1;
+		webTouchEvent.changed_touches[ webTouchEvent.changed_touches_length ].radius_y = 1;
+		webTouchEvent.changed_touches[ webTouchEvent.changed_touches_length ].rotation_angle = 0;
+		webTouchEvent.changed_touches[ webTouchEvent.changed_touches_length ].force = 0;
+		webTouchEvent.changed_touches_length++;
+	}
+
+	view->InjectTouchEvent( webTouchEvent );
+}
+
+//! sends a Cinder TouchesEnded event to the WebView
+inline void handleTouchesEnded( Awesomium::WebView *view, ci::app::WindowRef window, ci::app::TouchEvent event )
+{
+	// TODO check differences between touches, changed_touches and target_touches
+	Awesomium::WebTouchEvent webTouchEvent;
+
+	webTouchEvent.type = Awesomium::kWebTouchEventType_End;
+	webTouchEvent.touches_length = 0;
+	webTouchEvent.changed_touches_length = 0;
+	webTouchEvent.target_touches_length = 0;
+	for ( const auto &touch : event.getTouches() )
+	{
+		if ( webTouchEvent.touches_length >= 7 )
+			break;
+
+		webTouchEvent.touches[ webTouchEvent.touches_length ].id = touch.getId();
+		webTouchEvent.touches[ webTouchEvent.touches_length ].state = Awesomium::kWebTouchPointState_Released;
+		ci::ivec2 pos = ( ci::ivec2 )window->toPixels( touch.getPos() );
+		webTouchEvent.touches[ webTouchEvent.touches_length ].screen_position_x = window->getPos().x + pos.x;
+		webTouchEvent.touches[ webTouchEvent.touches_length ].screen_position_y = window->getPos().y + pos.y;
+		webTouchEvent.touches[ webTouchEvent.touches_length ].position_x = pos.x;
+		webTouchEvent.touches[ webTouchEvent.touches_length ].position_y = pos.y;
+		webTouchEvent.touches[ webTouchEvent.touches_length ].radius_x = 1;
+		webTouchEvent.touches[ webTouchEvent.touches_length ].radius_y = 1;
+		webTouchEvent.touches[ webTouchEvent.touches_length ].rotation_angle = 0;
+		webTouchEvent.touches[ webTouchEvent.touches_length ].force = 0;
+		webTouchEvent.touches_length++;
+	}
+
+	view->InjectTouchEvent( webTouchEvent );
+}
+
+
 } } // namespace ph::awesomium
