@@ -187,7 +187,7 @@ inline ci::Surface toSurface( Awesomium::WebView* webview )
 	return toSurface( (Awesomium::BitmapSurface*) webview->surface() );
 }
 
-ci::gl::Texture toTexture( Awesomium::BitmapSurface* surface, ci::gl::Texture::Format format=ci::gl::Texture::Format() )
+ci::gl::TextureRef toTexture( Awesomium::BitmapSurface* surface, ci::gl::Texture::Format format=ci::gl::Texture::Format() )
 {
 	if( ! surface ) throw EmptyPointerException();
 	if( ! surface->buffer() ) throw InvalidBufferException();
@@ -196,14 +196,14 @@ ci::gl::Texture toTexture( Awesomium::BitmapSurface* surface, ci::gl::Texture::F
 	surface->set_is_dirty( false );
 
 	// create the gl::Texture by copying the data directly
-	return ci::gl::Texture( surface->buffer(), GL_BGRA, surface->width(), surface->height(), format );
+	return ci::gl::Texture::create( surface->buffer(), GL_BGRA, surface->width(), surface->height(), format );
 
 	// TODO: a more efficient way to render the Surface would be to create a ph::awesomium::Texture class that extends Awesomium::Surface,
 	// and use the Paint and Scroll methods to efficiently copy the changed portion. Then use Awesomium::WebCore::set_surface_factory() 
 	// to only create Cinder-compatible surfaces.
 }
 
-inline ci::gl::Texture toTexture( Awesomium::WebView* webview, ci::gl::Texture::Format format=ci::gl::Texture::Format() )
+inline ci::gl::TextureRef toTexture( Awesomium::WebView* webview, ci::gl::Texture::Format format=ci::gl::Texture::Format() )
 {
 	return toTexture( (Awesomium::BitmapSurface*) webview->surface(), format );
 }
